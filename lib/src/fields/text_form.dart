@@ -20,6 +20,8 @@ class TextForm extends StatefulWidget {
   final void Function(TextFormController cont)? onCreated;
   final void Function(Result<String> value)? onSubmitted;
   final List<Validator> validators;
+  final TextAlign? textAlign;
+  final TextInputType? keyboardType;
 
   const TextForm({
     required this.title,
@@ -37,6 +39,8 @@ class TextForm extends StatefulWidget {
     this.onCreated,
     this.onSubmitted,
     this.validators = const [],
+    this.textAlign,
+    this.keyboardType,
   });
 
   @override
@@ -57,7 +61,9 @@ class _TextFormState extends State<TextForm> with ReactiveState<TextForm> {
     super.initState();
     _textEditingController = heart.joinDynamicObject(TextEditingController(text: widget.initialText));
 
-    _controller = TextFormController(currentText: widget.initialText, fieldNames: widget.fieldNames, maxCharacter: widget.maxCharacter, maxLines: widget.maxLines, heart: heart, validators: widget.validators);
+    _controller = heart.joinDisposableObject(
+      TextFormController(currentValue: widget.initialText, fieldNames: widget.fieldNames, maxCharacter: widget.maxCharacter, maxLines: widget.maxLines, heart: heart, validators: widget.validators),
+    );
     if (widget.onCreated != null) {
       widget.onCreated!(_controller);
     }
@@ -73,6 +79,7 @@ class _TextFormState extends State<TextForm> with ReactiveState<TextForm> {
     });
 
     _controller.validityChange.listen((_) => _updateData());
+    _controller.notifyChangeError.listen((_) => _updateData());
     _controller
         .buildFieldChannel()
         .onCorrectLambda((newChannel) {
@@ -108,15 +115,17 @@ class _TextFormState extends State<TextForm> with ReactiveState<TextForm> {
       focusNode: widget.focusNode,
       obscureText: widget.obscureText,
       textInputAction: widget.inputAction,
+      textAlign: widget.textAlign ?? TextAlign.start,
       decoration: InputDecoration(border: const OutlineInputBorder(), labelText: translatedTitle.toString(), icon: widget.icon, errorText: _controller.isValid ? null : lastErrorOration.toString()),
       inputFormatters: formatters,
+      keyboardType: widget.keyboardType,
       onEditingComplete: () {
         _controller.changeFieldValue(_textEditingController.text);
       },
       onSubmitted: (_) {
         final result = _controller.changeFieldValue(_textEditingController.text);
         if (widget.onSubmitted != null) {
-          widget.onSubmitted!(result.cast<String>());
+          widget.onSubmitted!(result);
         }
       },
     );
