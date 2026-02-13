@@ -23,7 +23,7 @@ class SingleStackContainer extends StatefulWidget {
 class _SingleStackContainerState extends State<SingleStackContainer> implements SingleStackContainerController {
   final captureKey = GlobalKey();
   //final timer = MaxiTimer();
-  final semaphore = Semaphore();
+  final mutex = Mutex();
 
   late Widget child;
 
@@ -92,7 +92,7 @@ class _SingleStackContainerState extends State<SingleStackContainer> implements 
   void updateChild({required Widget newChild}) {
     if (!mounted) return;
     //timer.cancel();
-    semaphore.execute(() async {
+    mutex.execute(() async {
       await WidgetsBinding.instance.endOfFrame;
       final boundary = captureKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
       if (boundary == null || !mounted) return;

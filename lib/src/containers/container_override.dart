@@ -30,7 +30,7 @@ class _ContainerOverrideState extends State<ContainerOverride> implements Contai
 
   late bool _isOverriding;
 
-  final semaphore = Semaphore();
+  final mutex = Mutex();
   final timer = MaxiTimer();
 
   @override
@@ -105,7 +105,7 @@ class _ContainerOverrideState extends State<ContainerOverride> implements Contai
   @override
   Future<bool> showAnotherOverride({required Widget newOverrideChild}) {
     timer.cancel();
-    return semaphore.execute(() async {
+    return mutex.execute(() async {
       overrideChild = newOverrideChild;
       _isOverriding = true;
       overrideIsVisible = true;
@@ -117,7 +117,7 @@ class _ContainerOverrideState extends State<ContainerOverride> implements Contai
   @override
   Future<bool> hideOverride() {
     timer.cancel();
-    return semaphore.execute(() async {
+    return mutex.execute(() async {
       _isOverriding = false;
       setState(() {});
       return timer.startOrReset(duration: widget.duration, payload: true);
@@ -127,7 +127,7 @@ class _ContainerOverrideState extends State<ContainerOverride> implements Contai
   @override
   Future<bool> showOverride() {
     timer.cancel();
-    return semaphore.execute(() async {
+    return mutex.execute(() async {
       overrideIsVisible = true;
       setState(() {});
       await WidgetsBinding.instance.endOfFrame;

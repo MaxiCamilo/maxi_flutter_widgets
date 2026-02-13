@@ -29,7 +29,7 @@ class Doppelganger extends StatefulWidget {
 
 class _DoppelgangerState extends State<Doppelganger> implements DoppelgangerController {
   final captureKey = GlobalKey();
-  final semaphore = Semaphore();
+  final mutex = Mutex();
 
   StreamController<bool>? notifyChildHiddenController;
 
@@ -119,7 +119,7 @@ class _DoppelgangerState extends State<Doppelganger> implements DoppelgangerCont
       return;
     }
 
-    semaphore.execute(() async {
+    mutex.execute(() async {
       if (_isFake) {
         if (destroy != null && destroy != _destroy) {
           _destroy = destroy;
@@ -155,7 +155,7 @@ class _DoppelgangerState extends State<Doppelganger> implements DoppelgangerCont
 
   @override
   FutureResult<ui.Image> captureRawImage({double? pixelRatio}) {
-    return semaphore.execute(() async {
+    return mutex.execute(() async {
       if (!mounted) {
         return NegativeResult.controller(
           code: ErrorCode.implementationFailure,
@@ -192,7 +192,7 @@ class _DoppelgangerState extends State<Doppelganger> implements DoppelgangerCont
       return;
     }
 
-    semaphore.execute(() async {
+    mutex.execute(() async {
       if (!_isFake) {
         return;
       }
