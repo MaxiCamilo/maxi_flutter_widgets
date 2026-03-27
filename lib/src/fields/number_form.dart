@@ -68,7 +68,7 @@ class _NumberFormState extends State<NumberForm> with ReactiveState<NumberForm> 
     enableIncrease = widget.maximum != null && currentValue < widget.maximum!;
     enableDecrease = widget.minimum != null && currentValue > widget.minimum!;
 
-    numberFormController = heart.joinDisposableObject(
+    numberFormController = heart.lifecycleScope.joinDisposableObject(
       NumberFormController(
         isDecimal: widget.isDecimal,
         minimum: widget.minimum,

@@ -50,9 +50,9 @@ class _ContractVerticallyState extends State<ContractVertically> with ReactiveSt
     _destroy = widget.destroy;
     _delay = widget.duration;
 
-    ac = heart.joinDynamicObject(AnimationController(vsync: this, duration: widget.duration));
-    factor = heart.joinDynamicObject(CurvedAnimation(parent: ac, curve: widget.curve));
-    timer = heart.joinDisposableObject(MaxiTimer());
+    ac = heart.lifecycleScope.joinDynamicObject(AnimationController(vsync: this, duration: widget.duration));
+    factor = heart.lifecycleScope.joinDynamicObject(CurvedAnimation(parent: ac, curve: widget.curve));
+    timer = heart.lifecycleScope.joinDisposableObject(MaxiTimer());
     child = widget.contracted ? const SizedBox.shrink() : widget.child;
 
     if (widget.onCreated != null) {

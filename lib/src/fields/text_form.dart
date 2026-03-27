@@ -59,9 +59,9 @@ class _TextFormState extends State<TextForm> with ReactiveState<TextForm> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = heart.joinDynamicObject(TextEditingController(text: widget.initialText));
+    _textEditingController = heart.lifecycleScope.joinDynamicObject(TextEditingController(text: widget.initialText));
 
-    _controller = heart.joinDisposableObject(
+    _controller = heart.lifecycleScope.joinDisposableObject(
       TextFormController(currentValue: widget.initialText, fieldNames: widget.fieldNames, maxCharacter: widget.maxCharacter, maxLines: widget.maxLines, heart: heart, validators: widget.validators),
     );
     if (widget.onCreated != null) {

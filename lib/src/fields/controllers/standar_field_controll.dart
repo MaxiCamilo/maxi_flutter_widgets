@@ -48,8 +48,8 @@ abstract class StandarFieldControll<T> implements Disposable, FieldController {
   Stream<ErrorData> get notifyChangeError => _notifyChangeErrorController.stream;
 
   StandarFieldControll({required T currentValue, required this.heart, required this.fieldNames, required this.validators}) {
-    _validityChangeController = heart.joinStreamController(StreamController<bool>.broadcast());
-    _notifyChangeErrorController = heart.joinStreamController(StreamController<ErrorData>.broadcast());
+    _validityChangeController = heart.lifecycleScope.joinStreamController(StreamController<bool>.broadcast());
+    _notifyChangeErrorController = heart.lifecycleScope.joinStreamController(StreamController<ErrorData>.broadcast());
     _currentValue = currentValue;
     final firstValidation = checkValue(currentValue);
     if (firstValidation.itsFailure) {
@@ -69,7 +69,7 @@ abstract class StandarFieldControll<T> implements Disposable, FieldController {
     }
     if (_masterChannel == null) {
       _masterChannel = MasterChannel<dynamic, Result<T>>();
-      heart.joinDisposableObject(_masterChannel!);
+      heart.lifecycleScope.joinDisposableObject(_masterChannel!);
       _masterChannel!.getReceiver().onCorrectLambda(_onChannelReceive).logIfFails(errorName: '[$runtimeType -> buildFieldChannel] Could not get channel receiver');
     }
 
@@ -77,7 +77,7 @@ abstract class StandarFieldControll<T> implements Disposable, FieldController {
   }
 
   void _onChannelReceive(Stream<dynamic> stream) {
-    heart.joinStream(
+    heart.lifecycleScope.joinStream(
       stream: stream,
       onData: (data) {
         changeFieldValue(data);
