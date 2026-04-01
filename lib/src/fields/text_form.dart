@@ -82,10 +82,10 @@ class _TextFormState extends State<TextForm> with ReactiveState<TextForm> {
     _controller.notifyChangeError.listen((_) => _updateData());
     _controller
         .buildFieldChannel()
-        .onCorrectLambda((newChannel) {
+        .select((newChannel) {
           newChannel
               .getReceiver()
-              .onCorrectLambda((stream) {
+              .select((stream) {
                 stream.listen((item) => _updateData());
               })
               .logIfFails(errorName: '[TextForm -> initState] Could not get field channel receiver');

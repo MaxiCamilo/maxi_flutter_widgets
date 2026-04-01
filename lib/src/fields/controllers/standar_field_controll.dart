@@ -70,7 +70,7 @@ abstract class StandarFieldControll<T> implements Disposable, FieldController {
     if (_masterChannel == null) {
       _masterChannel = MasterChannel<dynamic, Result<T>>();
       heart.lifecycleScope.joinDisposableObject(_masterChannel!);
-      _masterChannel!.getReceiver().onCorrectLambda(_onChannelReceive).logIfFails(errorName: '[$runtimeType -> buildFieldChannel] Could not get channel receiver');
+      _masterChannel!.getReceiver().select(_onChannelReceive).logIfFails(errorName: '[$runtimeType -> buildFieldChannel] Could not get channel receiver');
     }
 
     return _masterChannel!.buildConnector();
