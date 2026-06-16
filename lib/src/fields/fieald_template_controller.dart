@@ -151,4 +151,15 @@ abstract class FiealdTemplateController<T> with DisposableMixin, InitializableMi
       return _actualError!;
     }
   }
+
+  @override
+  void defineAsInvalid(NegativeResult error) {
+    final actualValid = _isValid;
+    _isValid = false;
+    _actualError = error;
+    _valueChangeErrorController.add(error);
+    if (actualValid != _isValid) {
+      _isValidChangedController.add(_isValid);
+    }
+  }
 }

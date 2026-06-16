@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:maxi_framework/maxi_framework.dart';
 
-mixin ReactiveState<T extends StatefulWidget> on State<T> {
+abstract class ReactiveState<T extends StatefulWidget> extends State<T> {
   late final LifecycleScope? _heart;
+
+  bool _wasBuilt = false;
 
   LifecycleScope get heart {
     if (_heart == null) {
@@ -15,6 +17,10 @@ mixin ReactiveState<T extends StatefulWidget> on State<T> {
     }
     return _heart;
   }
+
+  Widget performanceBuild(BuildContext context);
+
+  void performanceFirstBuild(BuildContext context) {}
 
   @override
   @mustCallSuper
@@ -29,5 +35,17 @@ mixin ReactiveState<T extends StatefulWidget> on State<T> {
   void dispose() {
     super.dispose();
     _heart?.dispose();
+    _heart = null;
+  }
+
+  @override
+  @mustCallSuper
+  Widget build(BuildContext context) {
+    if (!_wasBuilt) {
+      _wasBuilt = true;
+      performanceFirstBuild(context);
+    }
+
+    return performanceBuild(context);
   }
 }

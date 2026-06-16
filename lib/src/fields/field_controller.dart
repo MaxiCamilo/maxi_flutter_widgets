@@ -15,4 +15,5 @@ abstract interface class FieldController<T> implements Disposable {
   Result<void> changeGenericFieldValue({required String name, required dynamic newValue});
   Result<T> getFieldValue({required String name});
   NegativeResult<void> getActualError();
+  void defineAsInvalid(NegativeResult error);
 }
