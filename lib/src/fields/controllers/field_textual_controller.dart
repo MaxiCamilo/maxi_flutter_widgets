@@ -10,10 +10,10 @@ class FieldTextualController extends FiealdTemplateController<String> {
   FieldTextualController({
     required super.listeningFieldNames,
     super.initialValue = '',
-    this.maxLength = 0,
+    this.maxLength = 99999999,
     this.minLength = 0,
-    this.maxLines = 0,
-    this.minLines = 0,
+    this.maxLines = 99999999,
+    this.minLines = 1,
     super.aceptInvalidValues = true,
     super.validators = const [],
   });
@@ -21,10 +21,10 @@ class FieldTextualController extends FiealdTemplateController<String> {
   FieldTextualController.oneName({
     required String name,
     super.initialValue = '',
-    this.maxLength = 0,
+    this.maxLength = 99999999,
     this.minLength = 0,
-    this.maxLines = 0,
-    this.minLines = 0,
+    this.maxLines = 99999999,
+    this.minLines = 1,
     super.aceptInvalidValues = true,
     super.validators = const [],
   }) : super(listeningFieldNames: [name]);

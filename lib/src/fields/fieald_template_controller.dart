@@ -114,7 +114,24 @@ abstract class FiealdTemplateController<T> with DisposableMixin, InitializableMi
   }
 
   @override
-  Result<T> getFieldValue({required String name}) => initialize().onCorrect((_) => ResultValue(content: _currentValue));
+  Result<T> getFieldValue({required String name}) {
+    final initResult = initialize();
+    if (initResult.itsFailure) {
+      return initResult.cast();
+    }
+
+    if (isListeningToFieldName(name)) {
+      return ResultValue(content: _currentValue);
+    } else {
+      return NegativeResult.controller(
+        code: ErrorCode.invalidProperty,
+        message: FlexibleOration(message: 'This controller is not listening to a field named %1', textParts: [name]),
+      );
+    }
+  }
+
+  @override
+  Result<T> getValue() => initialize().onCorrect((_) => ResultValue(content: _currentValue));
 
   Result<void> extraCheckValue(dynamic value);
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:maxi_flutter_framework/maxi_flutter_framework.dart';
 import 'package:maxi_framework/maxi_framework.dart';
 
 class VisualOration extends StatefulWidget {
@@ -36,7 +35,7 @@ class _VisualOrationState extends State<VisualOration> {
   Widget build(BuildContext context) {
     if (_originalText == null) {
       _originalText = widget.text;
-      _text = widget.text.translateFromProvider(context: context, original: null).toString();
+      _text = widget.text.translateText();
     }
 
     if (widget.selectable) {
