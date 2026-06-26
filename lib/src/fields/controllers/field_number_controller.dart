@@ -1,24 +1,37 @@
 import 'package:maxi_flutter_widgets/src/fields/fieald_template_controller.dart';
 import 'package:maxi_framework/maxi_framework.dart';
 
-class FieldNumberController extends FiealdTemplateController<double> {
+typedef FieldIntegerController = FieldNumberController<int>;
+typedef FieldDoubleController = FieldNumberController<double>;
+
+class FieldNumberController<T extends num> extends FiealdTemplateController<T> {
   final double maxValue;
   final double minValue;
 
-  FieldNumberController({this.maxValue = double.maxFinite, this.minValue = 0, required super.listeningFieldNames, super.initialValue = 0, super.aceptInvalidValues = true, super.validators = const []});
+  bool get isInteger => T == int;
 
-  FieldNumberController.oneName({required String name, super.initialValue = 0, super.aceptInvalidValues = true, super.validators = const [], this.maxValue = double.maxFinite, this.minValue = 0})
+  FieldNumberController({this.maxValue = double.maxFinite, this.minValue = 0, required super.listeningFieldNames, required super.initialValue, super.aceptInvalidValues = true, super.validators = const []});
+
+  FieldNumberController.oneName({required String name, required super.initialValue, super.aceptInvalidValues = true, super.validators = const [], this.maxValue = double.maxFinite, this.minValue = 0})
     : super(listeningFieldNames: [name]);
+
+  T parseValue(num value) {
+    if (isInteger) {
+      return value.toInt() as T;
+    } else {
+      return value.toDouble() as T;
+    }
+  }
 
   @override
   Result<void> changeGenericFieldValue({required String name, required newValue}) {
     if (isListeningToFieldName(name) && newValue != null) {
       if (newValue is num) {
-        return changeFieldValue(newValue.toDouble());
+        return changeFieldValue(parseValue(newValue));
       } else if (newValue is String) {
         final parsedValue = double.tryParse(newValue);
         if (parsedValue != null) {
-          return changeFieldValue(parsedValue);
+          return changeFieldValue(parseValue(parsedValue));
         } else {
           return NegativeResult.controller(
             code: ErrorCode.invalidValue,
